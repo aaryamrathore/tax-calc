@@ -1,3 +1,9 @@
+import os
+os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib_config"
+
+import matplotlib
+matplotlib.use("Agg")
+
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -48,7 +54,7 @@ if income > 0:
     new_tax = new_regime_tax(income)
     flat_tax_val = flat_tax(income)
 
-    st.subheader(" Tax Summary")
+    st.subheader("Tax Summary")
     c1, c2, c3 = st.columns(3)
     c1.metric("Old Regime", f"₹{old_tax:,.2f}")
     c2.metric("New Regime", f"₹{new_tax:,.2f}")
@@ -58,14 +64,12 @@ if income > 0:
     best = "Old Regime" if best_val == old_tax else ("New Regime" if best_val == new_tax else "Flat Tax")
     st.success(f" Lowest Tax Regime: **{best}**")
 
-    # Graph data
     incomes = np.linspace(0, max(income, 1), 200)
     old_vals = np.array([old_regime_tax(i) for i in incomes])
     new_vals = np.array([new_regime_tax(i) for i in incomes])
     flat_vals = np.array([flat_tax(i) for i in incomes])
 
-    # Graph 1
-    st.subheader("Graph 1: Income vs Total Tax")
+    st.subheader(" Graph 1: Income vs Total Tax")
     fig1 = plt.figure()
     plt.plot(incomes, old_vals, label="Old Regime")
     plt.plot(incomes, new_vals, label="New Regime")
@@ -76,7 +80,6 @@ if income > 0:
     plt.legend()
     st.pyplot(fig1)
 
-    # Graph 2
     st.subheader(" Graph 2: Income vs Effective Tax Rate")
     eff_old = np.where(incomes > 0, (old_vals / incomes) * 100, 0)
     eff_new = np.where(incomes > 0, (new_vals / incomes) * 100, 0)
